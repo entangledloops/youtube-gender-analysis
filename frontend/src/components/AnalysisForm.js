@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './AnalysisForm.css';
+import '../styles/AnalysisForm.css';
 
 const AnalysisForm = ({ onAnalyze }) => {
     const [url, setUrl] = useState('');
