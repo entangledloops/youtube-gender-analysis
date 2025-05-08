@@ -33,11 +33,13 @@ const AnalysisForm = ({ onAnalyze }) => {
                 body: JSON.stringify({ url }),
             });
 
+            const data = await response.json();
+            
             if (!response.ok) {
-                throw new Error(`Failed to analyze the video: ${response.status} ${response.statusText}`);
+                const errorMessage = data.error || `Failed to analyze the video: ${response.status} ${response.statusText}`;
+                throw new Error(errorMessage);
             }
 
-            const data = await response.json();
             onAnalyze(data.gender);
         } catch (err) {
             console.error("Error during analysis:", err);
