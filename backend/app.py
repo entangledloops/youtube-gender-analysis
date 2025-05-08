@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import torch
+import torch.nn.functional as F
 from model import ECAPA_gender
 from utils.youtube_downloader import download_youtube_audio
 from utils.audio_processor import extract_first_10_seconds
@@ -96,11 +97,40 @@ def analyze():
 
         try:
             print(f"Predicting gender from audio segment: {segment_file}")
+            
+            # Load audio data
+            audio_data = model.load_audio(segment_file)
+            audio_data = audio_data.to(device)
+            
+            # Get raw model output
             with torch.no_grad():
-                output = model.predict(segment_file, device=device)
+                raw_output = model.forward(audio_data)
                 
-            print(f"Analysis result: {output}")
-            return jsonify({"gender": output})
+                # Apply softmax to get probabilities
+                probs = F.softmax(raw_output, dim=1)
+                
+                # Get predicted class
+                _, pred = raw_output.max(1)
+                output = model.pred2gender[pred.item()]
+                
+                # Extract individual probabilities
+                male_prob = probs[0, 0].item()  # Class 0 is male
+                female_prob = probs[0, 1].item()  # Class 1 is female
+                
+                # Log probabilities
+                print(f"Gender prediction probabilities:")
+                print(f"Male: {male_prob:.4f} ({male_prob*100:.2f}%)")
+                print(f"Female: {female_prob:.4f} ({female_prob*100:.2f}%)")
+                print(f"Final prediction: {output}")
+                
+            # Return result
+            return jsonify({
+                "gender": output,
+                "probabilities": {
+                    "male": male_prob,
+                    "female": female_prob
+                }
+            })
         except Exception as e:
             print(f"Error in model prediction: {e}")
             traceback.print_exc()

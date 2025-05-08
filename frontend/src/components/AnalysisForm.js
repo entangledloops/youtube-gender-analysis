@@ -40,7 +40,12 @@ const AnalysisForm = ({ onAnalyze }) => {
                 throw new Error(errorMessage);
             }
 
-            onAnalyze(data.gender);
+            // Check if we have the new format (with probabilities) or just the gender string
+            if (typeof data === 'object' && data.gender) {
+                onAnalyze(data);  // Pass the entire object including probabilities
+            } else {
+                onAnalyze(data.gender);  // Legacy support for old format
+            }
         } catch (err) {
             console.error("Error during analysis:", err);
             setError(err.message || "An unexpected error occurred");
