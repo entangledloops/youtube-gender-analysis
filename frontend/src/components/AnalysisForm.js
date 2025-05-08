@@ -12,7 +12,8 @@ const AnalysisForm = ({ onAnalyze }) => {
         setError('');
 
         try {
-            const response = await fetch('/api/analyze', {
+            // Changed from '/api/analyze' to '/analyze' to match the backend endpoint
+            const response = await fetch('/analyze', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,7 +36,6 @@ const AnalysisForm = ({ onAnalyze }) => {
 
     return (
         <div className="analysis-form">
-            <h2>Analyze YouTube Video</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"

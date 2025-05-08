@@ -11,10 +11,12 @@ function App() {
     };
 
     return (
-        <div className="App">
-            <h1>YouTube Gender Analysis</h1>
-            <AnalysisForm onAnalyze={handleAnalysisResult} />
-            {result && <ResultDisplay result={result} />}
+        <div className="container">
+            <div className="App">
+                <h1>YouTube Gender Analysis</h1>
+                <AnalysisForm onAnalyze={handleAnalysisResult} />
+                {result && <ResultDisplay result={result} />}
+            </div>
         </div>
     );
 }

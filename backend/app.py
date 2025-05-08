@@ -3,8 +3,10 @@ import torch
 from model import ECAPA_gender
 from utils.youtube_downloader import download_youtube_audio
 from utils.audio_processor import extract_first_10_seconds
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Load the gender classification model
 model = ECAPA_gender.from_pretrained("JaesungHuh/voice-gender-classifier")
