@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 import torch
 from model import ECAPA_gender
-from utils.youtube_downloader import download_audio
-from utils.audio_processor import extract_audio_segment
+from utils.youtube_downloader import download_youtube_audio
+from utils.audio_processor import extract_first_10_seconds
 
 app = Flask(__name__)
 
@@ -23,8 +23,8 @@ def analyze():
         return jsonify({"error": "No URL provided"}), 400
 
     # Download audio and extract the first 10 seconds
-    audio_file = download_audio(video_url)
-    segment_file = extract_audio_segment(audio_file, start_time=0, duration=10)
+    audio_file = download_youtube_audio(video_url)
+    segment_file = extract_first_10_seconds(audio_file, start_time=0, duration=10)
 
     with torch.no_grad():
         output = model.predict(segment_file, device=device)
