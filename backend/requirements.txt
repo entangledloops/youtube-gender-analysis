@@ -5,3 +5,4 @@ pydub
 youtube_dl
 numpy
 scipy
+torchaudio
