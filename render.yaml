@@ -9,6 +9,6 @@ services:
   - type: web
     name: youtube-gender-analysis-frontend
     env: static
-    buildCommand: cd frontend && npm install && npm run build
+    buildCommand: cd frontend && NODE_OPTIONS=--openssl-legacy-provider npm install && NODE_OPTIONS=--openssl-legacy-provider npm run build
     staticPublishPath: frontend/build
     autoDeploy: true
