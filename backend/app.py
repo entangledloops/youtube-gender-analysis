@@ -7,6 +7,7 @@ from flask_cors import CORS  # Import CORS
 import os
 import sys
 import traceback
+import platform
 
 app = Flask(__name__)
 
@@ -22,6 +23,26 @@ CORS(app, resources={
         "allow_headers": ["Content-Type", "Authorization"]
     }
 })
+
+# Check system dependencies
+try:
+    # Try to detect ffmpeg
+    import subprocess
+    subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print("FFmpeg is available")
+except:
+    print("WARNING: FFmpeg does not appear to be installed. Audio processing may fail.")
+
+# Try to detect soundfile/libsndfile
+try:
+    import soundfile as sf
+    print(f"Soundfile is available: {sf.__version__}")
+except Exception as e:
+    print(f"WARNING: Soundfile error: {str(e)}. Audio processing may fail.")
+
+# Print system info
+print(f"Python version: {platform.python_version()}")
+print(f"System: {platform.system()} {platform.release()}")
 
 # Load the gender classification model
 print("Loading gender classification model...")

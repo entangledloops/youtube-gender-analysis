@@ -3,10 +3,7 @@ services:
     name: youtube-gender-analysis-backend
     env: python
     plan: free
-    buildCommand: |
-      apt-get update -y && \
-      apt-get install -y ffmpeg python3-dev libsndfile1 && \
-      pip install -r backend/requirements.txt
+    buildCommand: pip install -r backend/requirements.txt
     startCommand: python backend/app.py
     autoDeploy: true
     envVars:
