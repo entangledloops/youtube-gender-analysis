@@ -1,5 +1,5 @@
 import React from 'react';
-import './ResultDisplay.css';
+import '../styles/ResultDisplay.css';
 
 const ResultDisplay = ({ result }) => {
     return (
