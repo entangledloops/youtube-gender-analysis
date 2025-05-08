@@ -1,0 +1,7 @@
+Flask
+torch
+transformers
+pydub
+youtube_dl
+numpy
+scipy
