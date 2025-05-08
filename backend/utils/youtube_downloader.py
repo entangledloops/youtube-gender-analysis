@@ -2,14 +2,12 @@ import os
 import tempfile
 import subprocess
 import shutil
-import sys
 import traceback
-import requests
-import json
+
 
 def download_youtube_audio(url):
     """
-    Download audio from a YouTube video URL using yt-dlp or falling back to an API.
+    Download audio from a YouTube video URL using yt-dlp or youtube-dl.
     
     Args:
         url: YouTube video URL
@@ -22,20 +20,8 @@ def download_youtube_audio(url):
     temp_output = os.path.join(temp_dir, "audio")
     
     try:
-        # First try: Direct YouTube URL download with yt-dlp or youtube-dl
-        try:
-            return download_with_command_line_tools(url, temp_dir, temp_output)
-        except Exception as e:
-            print(f"Command line download failed: {str(e)}")
-            print("Attempting alternative download method...")
-            
-            # Second try: Use a fallback approach
-            video_id = extract_video_id(url)
-            if video_id:
-                return download_with_alternative_method(video_id, temp_dir)
-            else:
-                raise Exception("Could not extract YouTube video ID from URL")
-            
+        # Download YouTube URL with yt-dlp or youtube-dl
+        return download_with_command_line_tools(url, temp_dir, temp_output)
     except Exception as e:
         print(f"Error downloading YouTube audio: {str(e)}")
         traceback.print_exc()
@@ -83,9 +69,17 @@ def download_with_command_line_tools(url, temp_dir, temp_output):
         "-x",  # Extract audio
         "--audio-format", "wav",  # Convert to WAV
         "--audio-quality", "0",  # Highest quality
+    ]
+    
+    # Add download section parameter to get only first 10 seconds (only for yt-dlp)
+    if tool == "yt-dlp":
+        command.extend(["--download-sections", "*0:00-0:10"])
+    
+    # Add output file template and URL
+    command.extend([
         "-o", f"{temp_output}.%(ext)s",  # Output filename template
         url
-    ]
+    ])
     
     # Run the command
     print(f"Downloading audio from: {url} using {tool}")
@@ -117,36 +111,3 @@ def download_with_command_line_tools(url, temp_dir, temp_output):
     
     print(f"Successfully downloaded audio to: {output_path}")
     return output_path
-
-def download_with_alternative_method(video_id, temp_dir):
-    """
-    Alternative method to download YouTube audio
-    This is a fallback if command line tools aren't available
-    
-    This implementation uses a simple approach for demo purposes.
-    In production, you might need a more reliable service or API.
-    """
-    import urllib.request
-    from pydub import AudioSegment
-    
-    # This is a simplified example - in production, you'd use a more robust method
-    # or a proper API with authentication
-    
-    # For this example, we'll use a dummy WAV file or a simple text-to-speech API
-    # as a placeholder to keep the workflow working
-    output_path = os.path.join(temp_dir, "audio.wav")
-    
-    try:
-        # Generate a silent audio file as placeholder
-        # In a real implementation, you would use a proper API service
-        # that can extract audio from YouTube videos
-        silent_audio = AudioSegment.silent(duration=5000)  # 5 seconds of silence
-        silent_audio.export(output_path, format="wav")
-        
-        print(f"Created placeholder audio file at: {output_path}")
-        print(f"WARNING: This is not the actual YouTube audio, just a placeholder")
-        return output_path
-        
-    except Exception as e:
-        print(f"Alternative download method failed: {str(e)}")
-        raise Exception(f"All download methods failed. Unable to process YouTube URL.")

@@ -48,7 +48,8 @@ print(f"System: {platform.system()} {platform.release()}")
 # Load the gender classification model
 print("Loading gender classification model...")
 try:
-    model = ECAPA_gender.from_pretrained("JaesungHuh/voice-gender-classifier")
+    # model = ECAPA_gender.from_pretrained("JaesungHuh/voice-gender-classifier")
+    model = ECAPA_gender.from_pretrained("/app/hf_model")
     model.eval()
 
     # If you are using gpu .... 
@@ -158,4 +159,4 @@ def healthcheck():
     return jsonify({"status": "ok"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5005)
