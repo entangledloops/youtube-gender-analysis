@@ -4,7 +4,6 @@ services:
     env: python
     buildCommand: pip install -r backend/requirements.txt
     startCommand: python backend/app.py
-    plan: free
     autoDeploy: true
 
   - type: web
@@ -12,5 +11,4 @@ services:
     env: static
     buildCommand: npm install && npm run build
     staticPublishPath: frontend/build
-    plan: free
     autoDeploy: true
