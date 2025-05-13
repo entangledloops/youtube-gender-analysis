@@ -6,7 +6,6 @@ from utils.youtube_downloader import download_youtube_audio
 from utils.audio_processor import extract_first_10_seconds
 from flask_cors import CORS  # Import CORS
 import os
-import sys
 import traceback
 import platform
 
@@ -48,6 +47,8 @@ print(f"System: {platform.system()} {platform.release()}")
 # Load the gender classification model
 print("Loading gender classification model...")
 try:
+    # Define model as a global variable
+    global model, device
     # model = ECAPA_gender.from_pretrained("JaesungHuh/voice-gender-classifier")
     model = ECAPA_gender.from_pretrained("/app/hf_model")
     model.eval()
@@ -60,7 +61,9 @@ try:
 except Exception as e:
     print(f"Error loading model: {e}")
     traceback.print_exc()
-    # Continue anyway, as the model might load later
+    # Define model as None so we can check for it later
+    model = None
+    device = torch.device("cpu")
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
@@ -68,6 +71,10 @@ def analyze():
     print(f"Received request: {request}")
     
     try:
+        # Check if model is loaded
+        if model is None:
+            return jsonify({"error": "Model not loaded. Please check server logs."}), 500
+            
         data = request.json
         video_url = data.get('url')
 
