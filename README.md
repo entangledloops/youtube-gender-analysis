@@ -11,6 +11,7 @@ The backend consists of the following files:
 - **utils/youtube_downloader.py**: Functions for downloading audio from a YouTube video using the provided URL.
 - **utils/audio_processor.py**: Functions for processing the downloaded audio to extract the first 10 seconds for analysis.
 - **requirements.txt**: Lists the dependencies required for the backend application.
+- **Dockerfile**: Defines the Docker container configuration for the backend.
 
 ## Installation
 
@@ -27,12 +28,30 @@ The backend consists of the following files:
 
 ## Usage
 
+### Option 1: Run with Python
+
 1. Start the Flask server:
    ```
    python app.py
    ```
 
-2. The server will be running at `http://localhost:5000`. The frontend will send requests to this endpoint to analyze the audio.
+2. The server will be running at `http://localhost:5005`.
+
+### Option 2: Run with Docker
+
+1. Pull the Docker image:
+   ```
+   docker pull entangledloops/gender-backend:latest
+   ```
+
+2. Run the Docker container:
+   ```
+   docker run -p 5005:5005 entangledloops/gender-backend:latest
+   ```
+
+3. The server will be running at `http://localhost:5005`.
+
+The frontend will send requests to this endpoint to analyze the audio.
 
 ## API Endpoint
 
